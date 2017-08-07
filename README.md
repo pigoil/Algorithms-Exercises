@@ -1,1 +1,11 @@
 # Algorithms-Exercises
+
+个人在学习《算法》中文第四版时的算法练习。
+
+## 基础
+
+### 二分查找
+
+- [二分查找的循环形式](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170806_binary_search)
+- [二分查找的递归形式](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170806_binary_search_recursion)
+- [二分查找过程中获取重复键值个数及位置](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170807_binary_search_replicate)
