@@ -13,14 +13,15 @@ struct Key
 {
 	int value;//键值
 	int cnt;//重复次数
-	int fiInd;//在数列中的第一个位置
-	int lsInd;//在数列中的最后一个位置
+	int begin;//在数列中的第一个位置
+	int end;//在数列中的最后一个位置
 };
 
-Key rank(Key* key,const vector<int>& a,int lo,int hi);
+bool rank(Key* key,const vector<int>& v,int lo,int hi);
 
 int main()
 {
+	/*打开文件并读取数据到容器中*/
 	string str;
 	vector<int> orderedData;
 	ifstream fin;
@@ -29,34 +30,54 @@ int main()
 	{
 		getline(fin,str);
 		orderedData.push_back(atoi(str.c_str()));
-		cout << atoi(str.c_str() ) << endl;
+		//cout << atoi(str.c_str() ) << endl;
 	}
 	
-	
+	//初始化查找键值
+	Key k;
+	k.value = 404;
+	if(rank(&k,orderedData,0,orderedData.size()))//查找到
+	{
+		cout << "value: " << k.value << endl;
+		cout << "begin: " << k.begin << endl;
+		cout << "end: " << k.end << endl; 
+		cout << "cnt: " << k.cnt << endl;
+	}
+	else cout << k.value << " not found."<< endl;//查不到
 	return 0;
 	
 }
 
 //二分查找的递归形式
-Key rank(Key* key,const vector<int>& a,int lo,int hi)
+bool rank(Key* key,const vector<int>& v,int lo,int hi)
 {
-	if(lo > hi)return -1;
+	if(lo > hi)return false;
 	int mid = (hi+lo)/2;
 	
-	cout << "key: " << key << " ";
+ 	cout << "value: " << key->value << " ";
 	cout << "lo: " << lo << " ";
-	cout << "hi: " << hi << "\n";
+	cout << "hi: " << hi << "\n"; 
 	
-	if(key < a[mid])
-		return rank(key,a,lo,mid-1);
-	else if(key > a[mid])
-		return rank(key,a,mid+1,hi);
+	if(key->value < v[mid])
+		return rank(key,v,lo,mid-1);
+	else if(key->value > v[mid])
+		return rank(key,v,mid+1,hi);
 	else
 	{
-		if(a[mid+1])
+		key->cnt = 1;
+		
+		key->begin = mid;//初始化头尾位置
+		key->end = mid;
+		
+		while(v[--key->begin] == key->value)//往前找
 		{
-			while()
+			key->cnt++;
 		}
-		if(a[mid-1])
+		while(v[++key->end] == key->value)//往后找
+		{
+			key->cnt++;
+		}
+		key->begin++,key->end--;//被多减了一次
+		return true;//找得到
 	}
 }
