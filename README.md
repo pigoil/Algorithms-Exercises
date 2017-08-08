@@ -12,3 +12,6 @@
 
 ### 链表
 - [双向链表的模板类](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170807_doubly_linked_list)
+
+
+[!](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png)
