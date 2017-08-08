@@ -9,3 +9,6 @@
 - [二分查找的循环形式](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170806_binary_search)
 - [二分查找的递归形式](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170806_binary_search_recursion)
 - [二分查找过程中获取重复键值个数及位置](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170807_binary_search_replicate)
+
+### 链表
+- [双向链表的模板类](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170807_doubly_linked_list)
