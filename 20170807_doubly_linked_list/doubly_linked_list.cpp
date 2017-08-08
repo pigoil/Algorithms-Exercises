@@ -28,6 +28,7 @@ public:
 	unsigned int size(){return _size;};//返回链表的大小
 	bool isEmpty(){return _size == 0;};//返回链表是否为空
 	void clear();
+	void reverse();
 	
 private:
 	class _node
@@ -167,23 +168,43 @@ void DoublyLinkedList<T>::clear()
 	while(removeFromHead(d));//历遍链表，删除所有数据并释放内存
 }
 
+/*链表反序*/
+template <typename T>
+void DoublyLinkedList<T>::reverse()
+{
+	if(isEmpty())return;	
+
+	//cur的步进表达式是cur = cur->_last而不是next，因为链表反序以后原来的下一个现在变成了上一个了。
+	_node* mid;
+	for(_node* cur = _head;cur!=0;cur = cur->_last)
+	{
+		mid = cur->_next;
+		cur->_next = cur->_last;
+		cur->_last = mid;
+	}
+	mid = _head;//swap()
+	_head = _tail;
+	_tail = mid;
+}
+
 int main()
 {
 	DoublyLinkedList<int> ls(5);
 	int a,b;
 	
-	ls.addToTail(15);
-	ls.addToHead(12);
-	ls.removeFromTail(a);
-	ls.addToTail(12);
-	ls.addToTail(23);
-	ls.removeFromTail(a);
-	ls.removeFromTail(a);
-	ls.addToHead(122);
-	ls.addToHead(122);
-	ls.addToHead(123);
-	ls.addToTail(56);
-	ls.addToTail(123); 
+	ls.addToTail(15);//15
+	ls.addToHead(12);//12 15
+	ls.removeFromTail(a);//12
+	ls.addToTail(12);//12 12
+	ls.addToTail(23);//12 12 23
+	ls.removeFromTail(a);//12 12
+	ls.removeFromTail(a);//12
+	ls.addToHead(122);//122 12
+	ls.addToHead(122);//122 122 12
+	ls.addToHead(123);//123 122 122 12
+	ls.addToTail(56);//123 122 122 12 56
+	ls.addToTail(123);//123 122 122 12 56 //full
+	ls.reverse();//56 12 122 122 123
 	
 	while(ls.removeFromHead(a))
 	{
