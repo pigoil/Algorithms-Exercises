@@ -15,7 +15,8 @@
 
 ## 排序
 
-### [归并排序](https://github.com/pigoil/Algorithms-Exercises/tree/master/20170808_merge_sort)
+### 归并排序
+- [自顶向下的归并排序](https://github.com/pigoil/Algorithms-Exercises/blob/master/20170808_merge_sort/top_to_bottom_merge_sort.h)
 
 
 
