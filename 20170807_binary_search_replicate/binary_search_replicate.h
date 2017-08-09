@@ -23,6 +23,7 @@ public:
 		unsigned int repeat(){return _repeat;}
 		unsigned int beginIndex(){return _begin;}
 		unsigned int endIndex(){return _end;}
+		void reset(T d){_value = d,_repeat = _begin = _end =0;}
 	private:
 		T _value;
 		unsigned int _repeat;
