@@ -6,6 +6,7 @@
 
 using namespace std;
 
+typedef unsigned int u32;
 
 template <typename T>
 class DoublyLinkedList;
@@ -13,39 +14,67 @@ class DoublyLinkedList;
 template <typename T>
 class DoublyLinkedList
 {
-public:
-	DoublyLinkedList(unsigned int m = static_cast<unsigned int>(-1));
-	~DoublyLinkedList();
-
-	bool tail(T&) const;
-	bool head(T&) const;
-	bool removeFromTail(T&);
-	bool removeFromHead(T&);
-	
-	bool addToTail(const T&);
-	bool addToHead(const T&);
-	
-	unsigned int size(){return _size;};//返回链表的大小
-	bool isEmpty(){return _size == 0;};//返回链表是否为空
-	void clear();
-	void reverse();
-	
 private:
 	class _node
 	{
 	public:
-		T _data;//数据
-		_node* _last;//上一个的指针
-		_node* _next;//下一个的指针
-		_node(T d,_node* l,_node* n)://node类构造函数
-			_data(d),
-			_last(l),
-			_next(n)
-			{}
-	}*_head,*_tail;
+			//
+	private:
+		friend class DoublyLinkedList;//声明为链表类的友元
+		T _data;
+		_node* _last;
+		_node* _next;
+		
+		_node(T d,_node* l,_node* n):
+		_data(d),
+		_last(l),
+		_next(n){}
+	};
+
+public:
+	class iterator
+	{
+	public:
+		friend class DoublyLinkedList<T>;
+		iterator();
+		iterator next();
+		iterator last();
+		bool hasNext();
+		bool hasLast();
+		bool isValid(){return m_node != NULL;}//当前迭代器是否合法
+		iterator operator++();
+		iterator operator--();
+		iterator operator++(int);
+		iterator operator--(int);
+		T& operator*(){return m_node->_data;}
+		operator bool(){return isValid();}
+	private:
+		iterator(DoublyLinkedList::_node* n):
+		m_node(n){};
+		typename DoublyLinkedList::_node* m_node;
+	};
+	friend class iterator;
 	
-	unsigned int _size;//链表长度
-	unsigned int _maxsize;//链表最大长度
+	DoublyLinkedList(u32 max=(u32)-1);
+	~DoublyLinkedList();	
+	iterator tail() const;
+	iterator head() const;
+	iterator at(u32 index);
+	T& operator[](int index);
+
+	bool removeFromTail(T&);
+	bool removeFromHead(T&);
+	bool addToTail(const T& d);
+	bool addToHead(const T&);
+	
+	void 	clear();//清除整个链表
+	u32 	size(){return _size;}//元素个数
+	bool 	isEmpty(){return _size==0;}//测试链表是否空
+	void 	reverse();
+	
+private:
+	_node *_head,*_tail;
+	u32 _size,_maxsize;
 };
 
 //构造函数
@@ -60,39 +89,24 @@ DoublyLinkedList<T>::DoublyLinkedList(unsigned int m):
 	
 }
 
-//析构函数
-//清空整个链表，释放内存
 template <typename T>
 DoublyLinkedList<T>::~DoublyLinkedList()
 {
 	clear();
 }
 
-//读取表尾/表头的值到d中，并返回成功与否
-//该方法为const方法
 template <typename T>
-bool DoublyLinkedList<T>::tail(T& d) const
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::tail() const
 {
-	if(_tail && _size)//如果不为空
-	{
-		d = _tail->_data;//读取数据而不做更改
-		return true;
-	}
-	else return false;
+	return typename DoublyLinkedList<T>::iterator(_tail);
 }
 
 template <typename T>
-bool DoublyLinkedList<T>::head(T& d) const
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::head() const
 {
-	if(_head && _size)
-	{
-		d = _head->_data;
-		return true;
-	}
-	else return false;
+	return typename DoublyLinkedList<T>::iterator(_head);
 }
 
-/*移除表尾/表头节点，将该节点的值读取到d中，并返回成功与否*/
 template <typename T>
 bool DoublyLinkedList<T>::removeFromTail(T& d)
 {
@@ -127,7 +141,6 @@ bool DoublyLinkedList<T>::removeFromHead(T& d)
 	else return false;
 }
 
-/*在表尾/表头插入值d，并返回成功与否*/
 template <typename T>
 bool DoublyLinkedList<T>::addToTail(const T& d)
 {
@@ -160,7 +173,25 @@ bool DoublyLinkedList<T>::addToHead(const T& d)
 	return true;
 }
 
-/*清空整个链表*/
+template <typename T>
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::at(u32 index)
+{
+	if(index+1 > _size)return iterator(NULL);
+	
+	_node* tmp = _head;
+	for(u32 i=0;i<index;++i)
+	{
+		tmp = tmp->_next;
+	}
+	return iterator(tmp);
+}
+
+template <typename T>
+T& DoublyLinkedList<T>::operator[](int index)
+{
+	return *at(index);
+}
+
 template <typename T>
 void DoublyLinkedList<T>::clear()
 {
@@ -168,7 +199,6 @@ void DoublyLinkedList<T>::clear()
 	while(removeFromHead(d));//历遍链表，删除所有数据并释放内存
 }
 
-/*链表反序*/
 template <typename T>
 void DoublyLinkedList<T>::reverse()
 {
@@ -185,6 +215,67 @@ void DoublyLinkedList<T>::reverse()
 	mid = _head;//swap()
 	_head = _tail;
 	_tail = mid;
+}
+
+//返回该迭代位置有没有上一个节点/下一个节点
+template <typename T>
+bool DoublyLinkedList<T>::iterator:: hasNext()
+{
+	cout << m_node->_next <<endl;
+	return m_node->_next != NULL;
+}
+
+template <typename T>
+bool DoublyLinkedList<T>::iterator:: hasLast()
+{
+	return m_node->_last != NULL;
+}
+
+//返回上一个节点或下一个节点的迭代器
+template <typename T>
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::iterator::next()
+{
+	if(!hasNext())return iterator(NULL);
+	
+	return iterator(m_node->_next);
+}
+
+template <typename T>
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::iterator::last()
+{
+	if(!hasLast())return iterator(NULL);
+	
+	return iterator(m_node->_last);
+}
+
+template <typename T>
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::iterator::operator++()
+{
+	m_node = m_node->_next;
+	return *this;
+}
+
+template <typename T>
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::iterator::operator--()
+{
+	m_node = m_node->_last;
+	return *this;
+}
+
+template <typename T>
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::iterator::operator++(int)
+{
+	typename DoublyLinkedList<T>::iterator it(m_node);
+	m_node = m_node->_next;
+	return it;
+}
+
+template <typename T>
+typename DoublyLinkedList<T>::iterator DoublyLinkedList<T>::iterator::operator--(int)
+{
+	typename DoublyLinkedList<T>::iterator it(m_node);
+	m_node = m_node->_last;
+	return it;
 }
 
 int main()
@@ -206,9 +297,11 @@ int main()
 	ls.addToTail(123);//123 122 122 12 56 //full
 	ls.reverse();//56 12 122 122 123
 	
-	while(ls.removeFromHead(a))
+	DoublyLinkedList<int>::iterator it = ls.head();
+	for(int i=0;i<ls.size();++i)
 	{
-		cout << "Data: "<< a << " Size: " << ls.size() <<endl;
+		cout << "Data: "<< (ls[i]) << " Size: " << ls.size() << endl;
 	}
+	
 	return 0;
 }
